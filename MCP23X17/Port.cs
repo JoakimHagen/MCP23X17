@@ -21,6 +21,7 @@ namespace MCP23X17
     private readonly Func<int, int> _getHwAdr;
 
     internal readonly Side port;
+    internal bool Bank { get; set; }
 
     public bool UseCaching { get; set; }
 
@@ -32,16 +33,12 @@ namespace MCP23X17
       this.port = port;
       if (port == Side.A)
       {
-        _getHwAdr = i => i << 1;
+        _getHwAdr = i => Bank ? i : i << 1;
       }
       else // Side.B
       {
-        _getHwAdr = i => (i << 1) | 1;
+        _getHwAdr = i => Bank ? i | 0x10 : (i << 1) | 1;
       }
-
-      // TODO: Implement support for IOCON changes
-      // _getHwAdr = i => i;
-      // _getHwAdr = i => i & 0x10;
     }
 
     /// <summary>
@@ -104,7 +101,14 @@ namespace MCP23X17
         register = McpReg.OLAT;
       }
 
-      Write((int)register, value ? (byte)(Read(register) | mask) : (byte)(Read(register) & ~mask));
+      MaskedWrite((int)register, value, mask);
+    }
+
+    internal void MaskedWrite(int register, bool value, int mask)
+    {
+      Write(register, value
+        ? (byte)(Read(register) | mask)
+        : (byte)(Read(register) & ~mask));
     }
 
     /// <summary>

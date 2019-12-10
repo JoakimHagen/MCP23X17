@@ -92,6 +92,8 @@ namespace MCP23X17
   /// </summary>
   public class Device
   {
+    const int IOCON_INDEX = 5;
+
     public Port PortA { get; }
     public Port PortB { get; }
 
@@ -212,6 +214,83 @@ namespace MCP23X17
     {
       PortA.Reset();
       PortB.Reset();
+    }
+
+    public void WriteIOCON(byte values)
+    {
+      PortA.Write(IOCON_INDEX, values);
+      var bank = (values & 0x80) > 0;
+      PortA.Bank = bank;
+      PortB.Bank = bank;
+    }
+
+    /// <summary>
+    /// Interrupt Polarity flag
+    /// </summary>
+    public bool IntPol
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x02) > 0;
+      set => PortA.MaskedWrite(IOCON_INDEX, value, 0x02);
+    }
+
+    /// <summary>
+    /// Open Drain interrupt output flag
+    /// </summary>
+    public bool ODr
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x04) > 0;
+      set => PortA.MaskedWrite(IOCON_INDEX, value, 0x04);
+    }
+
+    /// <summary>
+    /// Hardware Address Enable flag
+    /// </summary>
+    public bool HAEn
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x08) > 0;
+      set => PortA.MaskedWrite(IOCON_INDEX, value, 0x08);
+    }
+
+
+    /// <summary>
+    /// SDA output Slew Rate disable flag
+    /// </summary>
+    public bool DisSlw
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x10) > 0;
+      set => PortA.MaskedWrite(IOCON_INDEX, value, 0x10);
+    }
+
+    /// <summary>
+    /// Sequential Operation flag
+    /// </summary>
+    public bool SeqOp
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x20) > 0;
+      set => PortA.MaskedWrite(IOCON_INDEX, value, 0x20);
+    }
+
+    /// <summary>
+    /// Interrupt pins mirror flag. Connects pins internally.
+    /// </summary>
+    public bool Mirror
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x40) > 0;
+      set => PortA.MaskedWrite(IOCON_INDEX, value, 0x40);
+    }
+
+    /// <summary>
+    /// Bank addressing scheme.
+    /// </summary>
+    public bool Bank
+    {
+      get => (PortA.Read(IOCON_INDEX) & 0x80) > 0;
+      set
+      {
+        PortA.MaskedWrite(IOCON_INDEX, value, 0x80);
+        PortA.Bank = value;
+        PortB.Bank = value;
+      }
     }
   }
 }
