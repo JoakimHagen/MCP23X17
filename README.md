@@ -7,7 +7,7 @@ There are 3 different interfaces to use
 - 16 bit full microchip manipulation with the Device class
 
 Each port supports read/write from cache and to queue with commits independently.
-Switch this on by setting the UseCache property. Switching off does not commit any queued writes.
+Switch this on by setting the UseCaching property. Switching off does not commit any queued writes.
 
 ### Current limitations
 
