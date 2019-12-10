@@ -40,16 +40,16 @@ namespace MCP23X17
     }
 
     /// <summary>
-    /// Controls whether pin has bias towards 5.5V and not floating. <see cref="McpReg.GPPU"/>
+    /// Controls whether pin has bias towards a high value and not floating using <see cref="McpReg.GPPU"/>.
     /// </summary>
-    public bool ConnectPullUp
+    public bool PullUpConnected
     {
       get => (_port.GPPU & _mask) > 0;
       set => _port.MaskedWrite(McpReg.GPPU, value, _mask);
     }
 
     /// <summary>
-    /// Controls whether <see cref="Value"/> reports the opposite of the actual pin status.
+    /// Controls whether <see cref="Value"/> reports the opposite of the actual pin status using <see cref="McpReg.IPOL"/>.
     /// </summary>
     public bool OppositePolarity
     {
@@ -67,7 +67,7 @@ namespace MCP23X17
     }
 
     /// <summary>
-    /// <see cref="McpReg.OLAT"/>
+    /// Output value when <see cref="Mode"/> is <see cref="PinMode.Output"/> using <see cref="McpReg.OLAT"/>.
     /// </summary>
     public bool OutputLatch
     {
