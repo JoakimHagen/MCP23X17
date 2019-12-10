@@ -92,8 +92,6 @@ namespace MCP23X17
   /// </summary>
   public class Device
   {
-    static readonly int IOCON_INDEX = 5;
-
     public Port PortA { get; }
     public Port PortB { get; }
 
@@ -214,19 +212,6 @@ namespace MCP23X17
     {
       PortA.Reset();
       PortB.Reset();
-    }
-
-    public void WriteIOCON(byte values)
-    {
-      throw new NotImplementedException();
-    }
-
-    public bool SeqOp
-    {
-      get => (PortA.Read(IOCON_INDEX) & 0x20) > 0;
-      set => PortA.Write(IOCON_INDEX, value
-        ? (byte)(PortA.Read(IOCON_INDEX) | 0x20)
-        : (byte)(PortA.Read(IOCON_INDEX) & ~0x20));
     }
   }
 }
