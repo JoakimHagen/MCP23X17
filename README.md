@@ -22,4 +22,4 @@ Setting the IOCON bank flag will change the chip's internal registry address map
 - Sequential operations are not yet implemented.
 - OnChange C# events not yet implemented.
 
-Please take the time to raise issues for desired features or bugs, thank you.
+Please take the time to raise issues for bugs or desired features, thank you.
