@@ -23,9 +23,12 @@ namespace MCP23X17
     internal readonly Side port;
     internal bool Bank { get; set; }
 
+    /// <summary>
+    /// Will read and manipulate internal cache if set. Use <see cref="Commit"/> to write changes to hardware
+    /// </summary>
     public bool UseCaching { get; set; }
 
-    public Port(Func<int, byte> readAddressByte, Action<int, byte> writeAddressByte, Side port)
+    internal Port(Func<int, byte> readAddressByte, Action<int, byte> writeAddressByte, Side port)
     {
       readHardware = readAddressByte;
       writeHardware = writeAddressByte;
@@ -93,6 +96,12 @@ namespace MCP23X17
       }
     }
 
+    /// <summary>
+    /// If <see cref="UseCaching"/> is true, writes masked bits to cache and queue, else writes to hardware.
+    /// </summary>
+    /// <param name="register"></param>
+    /// <param name="value"></param>
+    /// <param name="mask"></param>
     public void MaskedWrite(McpReg register, bool value, int mask)
     {
       // Consider GPIO readonly
@@ -111,10 +120,6 @@ namespace MCP23X17
         : (byte)(Read(register) & ~mask));
     }
 
-    /// <summary>
-    /// Will modify <see cref="McpReg.GPIO"/> in cache using <see cref="McpReg.IODIR"/> as mask
-    /// </summary>
-    /// <param name="olat"></param>
     private void SimulateGPIOWrite(byte olat)
     {
       var iodir = Cache[(int)McpReg.IODIR];
@@ -178,6 +183,9 @@ namespace MCP23X17
       Commit();
     }
 
+    /// <summary>
+    /// "PortA" or "PortB"
+    /// </summary>
     public override string ToString() => $"Port{port}";
 
     /// <summary>
@@ -261,7 +269,7 @@ namespace MCP23X17
       set => Write(McpReg.OLAT, value);
     }
 
-    public enum Side { A, B }
+    internal enum Side { A, B }
   }
 
 }

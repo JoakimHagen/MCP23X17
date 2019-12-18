@@ -114,6 +114,11 @@ namespace MCP23X17
     public Pin GPB6 { get; }
     public Pin GPB7 { get; }
 
+    /// <summary>
+    /// Creates a new driver instance with caching capabilities
+    /// </summary>
+    /// <param name="writeAddressByte"></param>
+    /// <param name="readAddressByte"></param>
     public Device(Action<int, byte> writeAddressByte, Func<int, byte> readAddressByte)
     {
       PortA = new Port(readAddressByte, writeAddressByte, Port.Side.A);
@@ -216,6 +221,10 @@ namespace MCP23X17
       PortB.Reset();
     }
 
+    /// <summary>
+    /// Set all the flags in the IOCON register at once
+    /// </summary>
+    /// <param name="values"></param>
     public void WriteIOCON(byte values)
     {
       PortA.Write(IOCON_INDEX, values);
@@ -250,7 +259,6 @@ namespace MCP23X17
       get => (PortA.Read(IOCON_INDEX) & 0x08) > 0;
       set => PortA.MaskedWrite(IOCON_INDEX, value, 0x08);
     }
-
 
     /// <summary>
     /// SDA output Slew Rate disable flag
